@@ -1,27 +1,45 @@
 package lms.gui;
 
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import lms.gui.tabs.ClientsTab;
+import lms.gui.tabs.UsersTab;
 
 public class AdminScene extends Scene {
-    private MenuBar menuBar;
-    private Menu menu1;
-    private Menu menu2;
-    private Menu menu3;
+    private TabPane tabPane;
+    private BorderPane borderPane;
+    private Tab tab;
 
-    AdminScene() {
-        super(new VBox(), 800, 600);
+    AdminScene(Pane pane) {
+        super(pane, 800, 700);
         setFill(Color.WHITE);
 
-        menuBar = new MenuBar();
-        menu1 = new Menu("menu1");
-        menu2 = new Menu("menu2");
-        menu3 = new Menu("menu3");
-        menuBar.getMenus().addAll(menu1, menu2, menu3);
+        tabPane = new TabPane();
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
-        ((VBox) getRoot()).getChildren().addAll(menuBar);
+        borderPane = new BorderPane();
+
+        new UsersTab(tabPane);
+        new ClientsTab(tabPane);
+
+        for (int i = 0; i < 5; i++) {
+            tab = new Tab();
+            tab.setText("Tab" + i);
+            HBox hbox = new HBox();
+            hbox.getChildren().add(new Label("Tab" + i));
+            hbox.setAlignment(Pos.CENTER);
+            tab.setContent(hbox);
+            tabPane.getTabs().add(tab);
+        }
+        borderPane.prefHeightProperty().bind(this.heightProperty());
+        borderPane.prefWidthProperty().bind(this.widthProperty());
+
+        borderPane.setCenter(tabPane);
+
+        pane.getChildren().add(borderPane);
+
     }
 }

@@ -31,7 +31,7 @@ public class SignInGridPane extends GridPane {
         headline.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         add(headline, 0, 0, 2, 1);
 
-        userName = new Label("User Name:");
+        userName = new Label("Username:");
         add(userName, 0, 1);
 
         userNameField = new TextField();

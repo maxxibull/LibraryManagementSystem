@@ -2,6 +2,7 @@ package lms.gui;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -14,7 +15,8 @@ public class Main extends Application {
         Scene signInScene = new Scene(grid, 300, 275);
         signInScene.setFill(Color.WHITE);
 
-        AdminScene adminScene = new AdminScene();
+        Pane newPane = new Pane();
+        AdminScene adminScene = new AdminScene(newPane);
 
         primaryStage.setTitle("LMS");
         primaryStage.setScene(signInScene);
