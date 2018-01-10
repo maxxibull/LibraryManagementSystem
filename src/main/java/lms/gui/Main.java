@@ -6,6 +6,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+
 public class Main extends Application {
 
     @Override
@@ -21,6 +24,8 @@ public class Main extends Application {
         primaryStage.setTitle("LMS");
         primaryStage.setScene(signInScene);
         primaryStage.show();
+
+        Connection connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/Lab03?user=root&password=");
 
         grid.getSignInButton().setOnAction(e -> {
             primaryStage.setScene(adminScene);

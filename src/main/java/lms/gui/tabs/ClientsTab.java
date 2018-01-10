@@ -124,8 +124,8 @@ public class ClientsTab {
         grid.add(hbox, 1, 17);
 
         grid.add(clientsInSystemLabel, 4, 0, 3, 1);
-        ListView<String> listOfUsers = new ListView<>();
-        grid.add(listOfUsers, 4, 1, 3, 17);
+        ListView<String> listOfClients = new ListView<>();
+        grid.add(listOfClients, 4, 1, 3, 17);
 
         tab.setContent(grid);
         tabPane.getTabs().add(tab);
