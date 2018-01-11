@@ -3,8 +3,11 @@ package lms.gui;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+
+import java.sql.Connection;
 
 public class EditorScene extends Scene {
     private MenuBar menuBar;
@@ -12,7 +15,7 @@ public class EditorScene extends Scene {
     private Menu menu2;
     private Menu menu3;
 
-    EditorScene() {
+    EditorScene(Pane pane, Connection connection) {
         super(new VBox(), 800, 600);
         setFill(Color.WHITE);
 

@@ -8,6 +8,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -19,6 +20,7 @@ public class SignInGridPane extends GridPane {
     private PasswordField passwdField;
     private Button signInButton;
     private HBox hBoxSignInButton;
+    private Text actionTarget;
 
     SignInGridPane() {
         super();
@@ -49,12 +51,19 @@ public class SignInGridPane extends GridPane {
         hBoxSignInButton.getChildren().add(signInButton);
         add(hBoxSignInButton, 1, 4);
 
-        /*final Text actionTarget = new Text();
-        grid.add(actionTarget, 0, 4);*/
+        actionTarget = new Text();
+        actionTarget.setFill(Color.RED);
+        add(actionTarget, 0, 4);
 
     }
 
     public Button getSignInButton() {
         return signInButton;
     }
+
+    public TextField getUserNameField() { return userNameField; }
+
+    public PasswordField getPasswdField() { return passwdField; }
+
+    public Text getActionTarget() { return actionTarget; }
 }

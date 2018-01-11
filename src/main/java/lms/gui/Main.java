@@ -6,10 +6,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.*;
 
 public class Main extends Application {
+    private Connection connection;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -19,22 +19,52 @@ public class Main extends Application {
         signInScene.setFill(Color.WHITE);
 
         Pane newPane = new Pane();
-        AdminScene adminScene = new AdminScene(newPane);
 
         primaryStage.setTitle("LMS");
         primaryStage.setScene(signInScene);
         primaryStage.show();
 
-        Connection connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/Lab03?user=root&password=");
-
         grid.getSignInButton().setOnAction(e -> {
-            primaryStage.setScene(adminScene);
-            primaryStage.centerOnScreen();
+            String login = grid.getUserNameField().getText();
+            grid.getUserNameField().setText("");
+            String password = grid.getPasswdField().getText();
+            grid.getPasswdField().setText("");
+            String url = "jdbc:mariadb://localhost:3306/LMS?user=" + login + "&password=" + password;
+
+            try {
+                getConnection(url);
+                PreparedStatement ps = connection.prepareStatement("SELECT type FROM Users WHERE login = ?");
+                ps.setString(1, login);
+                ResultSet rs = ps.executeQuery();
+                rs.next();
+                String text = rs.getString("type");
+                if(text.equals("admin")) {
+                    primaryStage.setScene(new AdminScene(newPane, connection));
+                    primaryStage.centerOnScreen();
+                }
+                else if(text.equals("librarian")) {
+                    primaryStage.setScene(new EditorScene(newPane, connection));
+                    primaryStage.centerOnScreen();
+                }
+                else if(text.equals("service")) {
+                    primaryStage.setScene(new ServiceScene(newPane, connection));
+                    primaryStage.centerOnScreen();
+                }
+                else {
+                    throw new Exception();
+                }
+            } catch(Exception ex) {
+                grid.getActionTarget().setText("Wrong data");
+            }
         });
     }
 
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private void getConnection(String url) throws Exception {
+        connection = DriverManager.getConnection(url);
     }
 }

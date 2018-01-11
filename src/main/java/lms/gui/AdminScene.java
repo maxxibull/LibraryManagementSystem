@@ -7,13 +7,17 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import lms.gui.tabs.*;
 
+import java.sql.Connection;
+
 public class AdminScene extends Scene {
     private TabPane tabPane;
     private BorderPane borderPane;
     private Tab tab;
+    private Connection connection;
 
-    AdminScene(Pane pane) {
+    AdminScene(Pane pane, Connection connection) {
         super(pane, 800, 700);
+        this.connection = connection;
         setFill(Color.WHITE);
 
         tabPane = new TabPane();
@@ -21,9 +25,9 @@ public class AdminScene extends Scene {
 
         borderPane = new BorderPane();
 
-        new UsersTab(tabPane);
-        new ClientsTab(tabPane);
-        new BooksInfoTab(tabPane);
+        new UsersTab(tabPane, connection);
+        new ClientsTab(tabPane, connection);
+        new BooksInfoTab(tabPane, connection);
         new BooksEditionTab(tabPane);
         new AuthorsTab(tabPane);
         new CopiesTab(tabPane);
