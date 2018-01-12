@@ -1,23 +1,27 @@
-package lms.gui;
+package lms.gui.scenes;
 
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import lms.gui.tabs.*;
 
 import java.sql.Connection;
 
-public class AdminScene extends Scene {
+public class ServiceScene extends Scene {
     private TabPane tabPane;
     private BorderPane borderPane;
-    private Tab tab;
     private Connection connection;
 
-    AdminScene(Pane pane, Connection connection) {
-        super(pane, 800, 700);
+    public ServiceScene(Pane pane, Connection connection, Stage primaryStage) {
+        super(pane, 900, 700);
         this.connection = connection;
+
         setFill(Color.WHITE);
 
         tabPane = new TabPane();
@@ -25,14 +29,10 @@ public class AdminScene extends Scene {
 
         borderPane = new BorderPane();
 
-        new UsersTab(tabPane, connection);
-        new ClientsTab(tabPane, connection);
-        new BooksInfoTab(tabPane, connection);
-        new BooksEditionTab(tabPane);
-        new AuthorsTab(tabPane);
-        new CopiesTab(tabPane);
-        new LimitsTab(tabPane);
-        new ClientsInfoTab(tabPane);
+        new ClientsInfoTab(tabPane, connection);
+        new ManagementLoans(tabPane, connection);
+        new HistoryTab(tabPane, connection);
+        new LogOutTab(tabPane, primaryStage);
 
         borderPane.prefHeightProperty().bind(this.heightProperty());
         borderPane.prefWidthProperty().bind(this.widthProperty());
@@ -40,6 +40,5 @@ public class AdminScene extends Scene {
         borderPane.setCenter(tabPane);
 
         pane.getChildren().add(borderPane);
-
     }
 }

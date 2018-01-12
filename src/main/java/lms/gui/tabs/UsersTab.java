@@ -13,7 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Callback;
-import lms.gui.AlertError;
+import lms.gui.alerts.AlertError;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -287,6 +287,7 @@ public class UsersTab {
             ps = connection.prepareStatement("FLUSH PRIVILEGES;");
             ps.executeQuery();
         } catch(Exception ex) {
+            ex.printStackTrace();
             new AlertError();
         }
     }
@@ -302,19 +303,14 @@ public class UsersTab {
             ps.setString(2, password);
             ps.executeQuery();
 
-            ps = connection.prepareStatement("GRANT INSERT, UPDATE, DELETE, SELECT ON LMS.Authors," +
-                    "LMS.Book_and_author, LMS.Books" +
-                    ", LMS.Books_edition, LMS.Books_info, LMS.On_loan TO ?@'localhost';");
-            ps.setString(1, login);
-            ps.executeQuery();
-
-            ps = connection.prepareStatement("GRANT SELECT ON LMS.Users, LMS.History, LMS.Rules, LMS.Clients TO ?@'localhost';");
+            ps = connection.prepareStatement("GRANT INSERT, UPDATE, DELETE, SELECT ON LMS.* TO ?@'localhost';");
             ps.setString(1, login);
             ps.executeQuery();
 
             ps = connection.prepareStatement("FLUSH PRIVILEGES;");
             ps.executeQuery();
         } catch(Exception ex) {
+            ex.printStackTrace();
             new AlertError();
         }
     }
@@ -330,17 +326,18 @@ public class UsersTab {
             ps.setString(2, password);
             ps.executeQuery();
 
-            ps = connection.prepareStatement("GRANT INSERT, UPDATE, DELETE, SELECT ON LMS.On_loan TO ?@'localhost';");
+            ps = connection.prepareStatement("GRANT INSERT, UPDATE, DELETE ON LMS.On_loan TO ?@'localhost';");
             ps.setString(1, login);
             ps.executeQuery();
 
-            ps = connection.prepareStatement("GRANT SELECT ON LMS.Users, LMS.History, LMS.Rules, LMS.Clients TO ?@'localhost';");
+            ps = connection.prepareStatement("GRANT SELECT ON LMS.* TO ?@'localhost';");
             ps.setString(1, login);
             ps.executeQuery();
 
             ps = connection.prepareStatement("FLUSH PRIVILEGES;");
             ps.executeQuery();
         } catch(Exception ex) {
+            ex.printStackTrace();
             new AlertError();
         }
     }

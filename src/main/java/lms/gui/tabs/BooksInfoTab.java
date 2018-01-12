@@ -13,7 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Callback;
-import lms.gui.AlertError;
+import lms.gui.alerts.AlertError;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

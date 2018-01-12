@@ -1,4 +1,4 @@
-package lms.gui;
+package lms.gui.alerts;
 
 import javafx.scene.control.Alert;
 

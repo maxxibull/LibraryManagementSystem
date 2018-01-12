@@ -22,7 +22,7 @@ public class SignInGridPane extends GridPane {
     private HBox hBoxSignInButton;
     private Text actionTarget;
 
-    SignInGridPane() {
+    public SignInGridPane() {
         super();
         setAlignment(Pos.CENTER);
         setHgap(10);

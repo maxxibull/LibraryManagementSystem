@@ -1,5 +1,9 @@
 package lms.gui.tabs;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -8,9 +12,21 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.util.Callback;
+import lms.gui.alerts.AlertError;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class AuthorsTab {
-    public AuthorsTab(TabPane tabPane) {
+    private Connection connection;
+    private ObservableList<ObservableList> observableArrayList;
+    private TableView tableView;
+
+    public AuthorsTab(TabPane tabPane, Connection connection) {
+        this.connection = connection;
+
         HBox hbox = null;
         Tab tab = new Tab();
         tab.setText("Authors");
@@ -24,6 +40,22 @@ public class AuthorsTab {
         Button removeButton = new Button("Remove author");
         removeButton.setMinWidth(200);
 
+        removeButton.setOnAction(e -> {
+            if(!removeIDTextField.getText().isEmpty()) {
+                try {
+                    PreparedStatement ps = connection.prepareStatement("DELETE FROM Authors WHERE ID = ?;");
+                    ps.setInt(1, Integer.parseInt(removeIDTextField.getText()));
+                    ps.executeQuery();
+                } catch(Exception ex) {
+                    new AlertError();
+                }
+            }
+            else {
+                new AlertError();
+            }
+            removeIDTextField.setText("");
+        });
+
         Label addNewClientLabel = new Label("Add new author");
         addNewClientLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         GridPane.setHalignment(addNewClientLabel, HPos.CENTER);
@@ -35,6 +67,25 @@ public class AuthorsTab {
         TextField addLastNameTextField = new TextField();
         Button addButton = new Button("Add new author");
         addButton.setMinWidth(200);
+
+        addButton.setOnAction(e -> {
+            if(!addFirstNameTextField.getText().isEmpty() && !addLastNameTextField.getText().isEmpty()) {
+                try {
+                    PreparedStatement ps = connection.prepareStatement(
+                            "INSERT INTO Authors (first_name, last_name) VALUES (?, ?)");
+                    ps.setString(1, addFirstNameTextField.getText());
+                    ps.setString(2, addLastNameTextField.getText());
+                    ps.executeQuery();
+                } catch(Exception ex) {
+                    new AlertError();
+                }
+            }
+            else {
+                new AlertError();
+            }
+            addFirstNameTextField.setText("");
+            addLastNameTextField.setText("");
+        });
 
         Label changeAuthorDataLabel = new Label("Change data (not ID)");
         changeAuthorDataLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
@@ -51,9 +102,45 @@ public class AuthorsTab {
         Button changeButton = new Button("Change data");
         changeButton.setMinWidth(200);
 
+        changeButton.setOnAction(e -> {
+            if(changeIDTextField.getText().isEmpty()) {
+                new AlertError();
+            }
+            else {
+                try {
+                    PreparedStatement ps = null;
+                    if(!changeFirstNameTextField.getText().isEmpty()) {
+                        ps = connection.prepareStatement("UPDATE Authors SET first_name = ? WHERE ID = ?");
+                        ps.setString(1, changeFirstNameTextField.getText());
+                        ps.setInt(2, Integer.parseInt(changeIDTextField.getText()));
+                        ps.executeQuery();
+                    }
+                    if(!changeLastNameTextField.getText().isEmpty()) {
+                        ps = connection.prepareStatement("UPDATE Authors SET last_name = ? WHERE ID = ?");
+                        ps.setString(1, changeLastNameTextField.getText());
+                        ps.setInt(2, Integer.parseInt(changeIDTextField.getText()));
+                        ps.executeQuery();
+                    }
+                } catch(Exception ex) {
+                    new AlertError();
+                }
+            }
+            changeFirstNameTextField.setText("");
+            changeLastNameTextField.setText("");
+            changeIDTextField.setText("");
+        });
+
         Label authorsInSystemLabel = new Label("Authors");
         authorsInSystemLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         GridPane.setHalignment(authorsInSystemLabel, HPos.CENTER);
+        Button refreshButton = new Button("Refresh");
+
+        refreshButton.setOnAction(e -> {
+            tableView.getItems().clear();
+            tableView.getColumns().clear();
+            fillTable();
+            tableView.refresh();
+        });
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -95,10 +182,48 @@ public class AuthorsTab {
         grid.add(hbox, 1, 13);
 
         grid.add(authorsInSystemLabel, 4, 0, 3, 1);
-        ListView<String> listOfAuthors = new ListView<>();
-        grid.add(listOfAuthors, 4, 1, 3, 13);
+
+        observableArrayList = FXCollections.observableArrayList();
+        tableView = new TableView();
+        fillTable();
+
+        grid.add(tableView, 4, 1, 3, 15);
+
+        hbox = new HBox(10);
+        hbox.setAlignment(Pos.BOTTOM_RIGHT);
+        hbox.getChildren().add(refreshButton);
+        grid.add(hbox, 6, 16);
 
         tab.setContent(grid);
         tabPane.getTabs().add(tab);
+    }
+
+    private void fillTable() {
+        try {
+            ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM Authors");
+
+            for(int i = 0 ; i < rs.getMetaData().getColumnCount(); i++) {
+                final int j = i;
+                TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i + 1));
+                col.setCellValueFactory((Callback<TableColumn.CellDataFeatures <ObservableList, String>,
+                        ObservableValue<String>>) param ->
+                        new SimpleStringProperty(param.getValue().get(j).toString()));
+
+                tableView.getColumns().addAll(col);
+            }
+
+            while(rs.next()) {
+                ObservableList<String> row = FXCollections.observableArrayList();
+                for(int i = 1 ; i <= rs.getMetaData().getColumnCount(); i++){
+                    row.add(rs.getString(i));
+                }
+                observableArrayList.add(row);
+
+            }
+
+            tableView.setItems(observableArrayList);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }

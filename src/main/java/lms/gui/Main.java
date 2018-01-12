@@ -5,6 +5,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import lms.gui.scenes.AdminScene;
+import lms.gui.scenes.LibrarianScene;
+import lms.gui.scenes.ServiceScene;
 
 import java.sql.*;
 
@@ -20,7 +23,7 @@ public class Main extends Application {
 
         Pane newPane = new Pane();
 
-        primaryStage.setTitle("LMS");
+        primaryStage.setTitle("Library Management System");
         primaryStage.setScene(signInScene);
         primaryStage.show();
 
@@ -39,15 +42,15 @@ public class Main extends Application {
                 rs.next();
                 String text = rs.getString("type");
                 if(text.equals("admin")) {
-                    primaryStage.setScene(new AdminScene(newPane, connection));
+                    primaryStage.setScene(new AdminScene(newPane, connection, primaryStage));
                     primaryStage.centerOnScreen();
                 }
                 else if(text.equals("librarian")) {
-                    primaryStage.setScene(new EditorScene(newPane, connection));
+                    primaryStage.setScene(new LibrarianScene(newPane, connection, primaryStage));
                     primaryStage.centerOnScreen();
                 }
                 else if(text.equals("service")) {
-                    primaryStage.setScene(new ServiceScene(newPane, connection));
+                    primaryStage.setScene(new ServiceScene(newPane, connection, primaryStage));
                     primaryStage.centerOnScreen();
                 }
                 else {
