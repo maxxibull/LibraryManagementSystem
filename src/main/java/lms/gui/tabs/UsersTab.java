@@ -90,10 +90,9 @@ public class UsersTab {
             if(addPasswordTextField.getText().equals(repeatPasswordTextField.getText()) &&
                     !addUsernameTextField.getText().isEmpty() && !addPasswordTextField.getText().isEmpty()) {
                 try {
-                    PreparedStatement ps = connection.prepareStatement("INSERT INTO Users VALUES (?, ?, ?)");
+                    PreparedStatement ps = connection.prepareStatement("INSERT INTO Users VALUES (?, ?)");
                     ps.setString(1, addUsernameTextField.getText());
-                    ps.setString(2, addPasswordTextField.getText());
-                    ps.setString(3, toggleGroup.getSelectedToggle().getUserData().toString());
+                    ps.setString(2, toggleGroup.getSelectedToggle().getUserData().toString());
                     ps.executeQuery();
 
                     switch(toggleGroup.getSelectedToggle().getUserData().toString()) {
@@ -139,12 +138,7 @@ public class UsersTab {
             if(changePasswordTextField.getText().equals(repeatNewPasswordTextField.getText()) &&
                     !changePasswordUsernameTextField.getText().isEmpty() && !changePasswordTextField.getText().isEmpty()) {
                 try {
-                    PreparedStatement ps = connection.prepareStatement("UPDATE Users SET password = ? WHERE login = ?;");
-                    ps.setString(1, changePasswordTextField.getText());
-                    ps.setString(2, changePasswordUsernameTextField.getText());
-                    ps.executeQuery();
-
-                    ps = connection.prepareStatement("SET PASSWORD FOR ?@'localhost' = PASSWORD(?);");
+                    PreparedStatement ps = connection.prepareStatement("SET PASSWORD FOR ?@'localhost' = PASSWORD(?);");
                     ps.setString(1, changePasswordUsernameTextField.getText());
                     ps.setString(2, changePasswordTextField.getText());
                     ps.executeQuery();
